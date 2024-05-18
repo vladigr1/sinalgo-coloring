@@ -104,7 +104,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	// a vector of all non-leaf nodes
 	Vector<TreeNode> treeNodes = new Vector<TreeNode>();
 	// the leaves of the node
-	Vector<LeafNode> leaves = new Vector<LeafNode>();
+	Vector<TreeNode> leaves = new Vector<TreeNode>();
 
 	/**
 	 * Builds a tree for the specified number of leaves and
@@ -145,7 +145,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		
 		// create the leaves (incl. assigning their position)
 		for(int i=0; i<numLeaves; i++) {
-			LeafNode ln = new LeafNode();
+			TreeNode ln = new TreeNode();
 			ln.setPosition((i+1)*dx, posY, 0);
 			ln.finishInitializationWithDefaultModels(true);
 			leaves.add(ln);
