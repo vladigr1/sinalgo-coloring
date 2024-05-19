@@ -39,7 +39,9 @@ public class TreeNode extends Node {
 //				if(parent == null || !inbox.getSender().equals(parent)) {
 //					continue;// don't consider mark messages sent by children
 //				}
+		
 		if (ci > 5) {// still not valid color
+			System.out.println("ID, before_ci: " + ID +" , "+ ci);
 			update_ci();
 			System.out.println("ID, update_ci: " + ID +" , "+ ci);
 			// forward the message to all children
@@ -51,8 +53,11 @@ public class TreeNode extends Node {
 			// alternatively, we could broadcast the message:
 			// broadcast(m);
 		}
+		
 		if (ci < 6) {
 			this.setColor(lcolor[ci]);
+		}else{
+			send(new MarkMessage(), this);
 		}
 		
 //			}
@@ -60,6 +65,10 @@ public class TreeNode extends Node {
 	}
 
 	private void update_ci() {
+		if (parent == null) { // root
+			ci = 0; 
+			return;
+		}
 		int cp = parent.ci;
 		int bit_index = 0;
 		while(true) {
@@ -73,6 +82,8 @@ public class TreeNode extends Node {
 	}
 	@Override
 	public void init() {
+		this.setColor(Color.BLACK);
+		this.ci = this.ID;
 	}
 
 	@Override
@@ -89,7 +100,6 @@ public class TreeNode extends Node {
 	
 	@NodePopupMethod(menuText = "Color children") 
 	public void colorKids() {
-		ci = 0; // root
 		MarkMessage msg = new MarkMessage();
 		MessageTimer timer = new MessageTimer(msg);
 		timer.startRelative(1, this);

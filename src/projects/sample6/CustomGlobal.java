@@ -95,7 +95,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	@AbstractCustomGlobal.CustomButton(buttonText="unmark", toolTipText="unmarks all nodes")
 	public void unMark() {
 		for(Node n : Tools.getNodeList()) {
-			n.setColor(Color.BLACK);
+			n.init();
 		}
 		Tools.repaintGUI();
 	}
