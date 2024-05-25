@@ -34,41 +34,24 @@ public class TreeNode extends Node {
 
 	@Override
 	public void handleMessages(Inbox inbox) {
-//		while(inbox.hasNext()) {
-//			Message m = inbox.next();
-//			if(m instanceof MarkMessage) {
-//				if(parent == null || !inbox.getSender().equals(parent)) {
-//					continue;// don't consider mark messages sent by children
-//				}
 		
 		if (ci >= 8) {// still not valid color
-			System.out.println("ID, before_ci: " + ID +" , "+ ci);
 			update_ci();
-			System.out.println("ID, update_ci: " + ID +" , "+ ci);
 			// forward the message to all children
 			for(Edge e : outgoingConnections) {
 				if(!e.endNode.equals(parent)) { // don't send it to the parent
 					send(new MarkMessage(), e.endNode);
 				}
 			}
-			// alternatively, we could broadcast the message:
-			// broadcast(m);
 		}
 		
 		if (ci < 6) {
 			this.setColor(lcolor[ci]);
 		} else if (ci < 8) { // 6 < ci < 8
-			if(is_wait_iter()) {
-				send(new MarkMessage(), this);
-			} else {
-				lower_ci();
-			}
+			shift_down();
 		} else { // log the ci
 			send(new MarkMessage(), this);
 		}
-		
-//			}
-//		}
 	}
 
 	private void update_ci() {
@@ -80,7 +63,6 @@ public class TreeNode extends Node {
 		int bit_index = 0;
 		while(true) {
 			if ((cp & (1 << bit_index)) != (ci & (1 << bit_index))) {
-				System.out.println("bit_index=" + bit_index);
 				ci = bit_index*2 + ((ci >> bit_index) % 2);
 				return;
 			}
@@ -88,40 +70,33 @@ public class TreeNode extends Node {
 		}
 	}
 	
-	private boolean is_wait_iter() {
-		for(Edge e : outgoingConnections) {
-			if(e.endNode instanceof TreeNode) {
-				TreeNode node = (TreeNode)(e.endNode);
-				 if (node.ci > ci)
-					 return true;
-			}
-		}
+	private void shift_down() {
 		
-		return false;
-	}
-	
-	private void lower_ci() {
-		boolean [] arr = new boolean[6];
-		Arrays.fill(arr, false);
-		
-		for(Edge e : outgoingConnections) {
-			if(e.endNode instanceof TreeNode) {
-				TreeNode node = (TreeNode)(e.endNode);
-				 if (node.ci < 6)
-					 arr[node.ci] = true;
-			}
-		}
-		
+		int cp = parent.ci; // the root will never shift down because it set to 0
+		int old_ci = ci;
 		for (int i=0; i <6; ++i) {
-			if (arr[i] == false) {
+			if ( i != cp) {
 				ci = i;
+				this.setColor(lcolor[ci]);
+			}
+		}
+		
+		// forward the message to all children
+		for(Edge e : outgoingConnections) {
+			if(!e.endNode.equals(parent)) { // don't send it to the parent
+				if(e.endNode instanceof TreeNode) {
+					TreeNode node = (TreeNode)(e.endNode);
+					node.ci = old_ci;
+					send(new MarkMessage(), node);
+					node.setColor(Color.BLACK);
+				}
 			}
 		}
 	}
 	@Override
 	public void init() {
 		this.setColor(Color.BLACK);
-		this.ci = ID + 6; // enforce at least run once to sync with parent 
+		this.ci = ID + 8; // enforce at least run once to sync with parent 
 	}
 
 	@Override
