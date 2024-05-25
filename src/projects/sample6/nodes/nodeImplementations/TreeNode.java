@@ -4,6 +4,7 @@ package projects.sample6.nodes.nodeImplementations;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample6.nodes.messages.MarkMessage;
@@ -40,7 +41,7 @@ public class TreeNode extends Node {
 //					continue;// don't consider mark messages sent by children
 //				}
 		
-		if (ci > 5) {// still not valid color
+		if (ci >= 8) {// still not valid color
 			System.out.println("ID, before_ci: " + ID +" , "+ ci);
 			update_ci();
 			System.out.println("ID, update_ci: " + ID +" , "+ ci);
@@ -56,7 +57,13 @@ public class TreeNode extends Node {
 		
 		if (ci < 6) {
 			this.setColor(lcolor[ci]);
-		}else{
+		} else if (ci < 8) { // 6 < ci < 8
+			if(is_wait_iter()) {
+				send(new MarkMessage(), this);
+			} else {
+				lower_ci();
+			}
+		} else { // log the ci
 			send(new MarkMessage(), this);
 		}
 		
@@ -80,10 +87,41 @@ public class TreeNode extends Node {
 			++bit_index;
 		}
 	}
+	
+	private boolean is_wait_iter() {
+		for(Edge e : outgoingConnections) {
+			if(e.endNode instanceof TreeNode) {
+				TreeNode node = (TreeNode)(e.endNode);
+				 if (node.ci > ci)
+					 return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void lower_ci() {
+		boolean [] arr = new boolean[6];
+		Arrays.fill(arr, false);
+		
+		for(Edge e : outgoingConnections) {
+			if(e.endNode instanceof TreeNode) {
+				TreeNode node = (TreeNode)(e.endNode);
+				 if (node.ci < 6)
+					 arr[node.ci] = true;
+			}
+		}
+		
+		for (int i=0; i <6; ++i) {
+			if (arr[i] == false) {
+				ci = i;
+			}
+		}
+	}
 	@Override
 	public void init() {
 		this.setColor(Color.BLACK);
-		this.ci = this.ID;
+		this.ci = ID + 6; // enforce at least run once to sync with parent 
 	}
 
 	@Override
