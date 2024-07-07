@@ -39,6 +39,8 @@ package projects.sample3;
 
 import java.awt.Color;
 
+import javax.swing.JOptionPane;
+
 import projects.sample3.nodes.nodeImplementations.MobileNode;
 import projects.sample3.nodes.timers.SmsTimer;
 
@@ -121,5 +123,10 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	 */
 	public void preRun() {
 		// A method called at startup, before the first round is executed.
+	}
+	
+	@AbstractCustomGlobal.CustomButton(buttonText="GO", toolTipText="A sample button")
+	public void sampleButton() {
+		JOptionPane.showMessageDialog(null, "You Pressed the 'GO' button.");
 	}
 }

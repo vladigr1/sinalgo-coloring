@@ -77,14 +77,8 @@ public class AntennaConnection extends ConnectivityModelHelper {
 	}
 
 	protected boolean isConnected(Node from, Node to) {
-		// Antennas are hardwired - we exclude links between pairs of antennas.
-		// MobileNodes are not connected among themselves
-		if(from instanceof Antenna && to instanceof MobileNode ||
-				to instanceof Antenna && from instanceof MobileNode) {
-			double dist = from.getPosition().squareDistanceTo(to.getPosition());
-			return dist < rMaxSquare;
-		}
-		return false;
+		double dist = from.getPosition().squareDistanceTo(to.getPosition());
+		return dist < rMaxSquare;
 	}
 
 }

@@ -207,8 +207,8 @@
 
 	</Framework>
 	<Custom>
-<GeometricNodeCollection rMax="100"/>
-<UDG rMax="100"/>
+<GeometricNodeCollection rMax="500"/>
+<UDG rMax="500"/>
 
 <Node defaultSize="10"/>
 

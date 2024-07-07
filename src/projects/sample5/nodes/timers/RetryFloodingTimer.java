@@ -39,7 +39,7 @@ public class RetryFloodingTimer extends Timer {
 	public void fire() {
 		if(isActive){
 			FNode n = (FNode) this.node;
-			n.lookForNode(destination, currentTTL * 2); // restart a flooding search with TTL twice as big
+//			n.lookForNode(destination, currentTTL * 2); // restart a flooding search with TTL twice as big
 		}
 	}
 }

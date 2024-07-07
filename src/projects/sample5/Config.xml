@@ -95,7 +95,7 @@
 		<!--  GUI                                                                  -->
 		<!--***********************************************************************-->
 		<!--If true, the application shows an extended control panel.-->
-		<extendedControl value="true" />
+		<extendedControl value="false" />
 
 		<!--If true, the graph edges are drawn as directed arrows,  otherwise simple lines.-->
 		<drawArrows value="false" />
@@ -215,8 +215,8 @@
 
 <Node defaultSize="10" />
 
-<GeometricNodeCollection rMax="50"/>
-<UDG rMax="50"/>
+<GeometricNodeCollection rMax="800"/>
+<UDG rMax="800"/>
 
 <SINR alpha="2" beta="0.7" noise="0"/>
 

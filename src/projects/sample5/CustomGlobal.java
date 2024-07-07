@@ -38,9 +38,14 @@ package projects.sample5;
 
 
 import java.awt.Color;
+import java.util.Random;
 
+import javax.swing.JOptionPane;
+
+import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.nodeImplementations.FNode;
-
+import projects.sample5.nodes.timers.GTimer;
+import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.tools.Tools;
@@ -75,18 +80,29 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		return false;
 	}
 
-	@GlobalMethod(menuText="Clear Routing Tables")
-	public void clearRoutingTalbes() {
-		for(Node n : Tools.getNodeList()) {
-			FNode fn = (FNode) n;
-			fn.clearRoutingTable();
-		}
-	}
+//	@GlobalMethod(menuText="Clear Routing Tables")
+//	public void clearRoutingTalbes() {
+//		for(Node n : Tools.getNodeList()) {
+//			FNode fn = (FNode) n;
+//			fn.clearRoutingTable();
+//		}
+//	}
 	
 	@GlobalMethod(menuText="Reset Node Color")
 	public void resetNodeColor() {
 		for(Node n : Tools.getNodeList()) {
 			n.setColor(Color.BLACK);
+		}
+	}
+	
+	@AbstractCustomGlobal.CustomButton(buttonText="GO", toolTipText="A sample button")
+	public void sampleButton() {
+		Random rand = new Random();
+		int max = Tools.getNodeList().size();
+		for(Node n : Tools.getNodeList()) {
+			int rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
+			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n.ID));
+			t.startRelative(1, n);
 		}
 	}
 	
