@@ -43,6 +43,7 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import projects.sample5.nodes.messages.MaxU;
+import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.nodeImplementations.FNode;
 import projects.sample5.nodes.timers.GTimer;
 import projects.sample6.nodes.messages.MarkMessage;
@@ -95,13 +96,27 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		}
 	}
 	
-	@AbstractCustomGlobal.CustomButton(buttonText="GO", toolTipText="A sample button")
+	@AbstractCustomGlobal.CustomButton(buttonText="GEN-U", toolTipText="A sample button")
 	public void sampleButton() {
 		Random rand = new Random();
 		int max = Tools.getNodeList().size();
 		for(Node n : Tools.getNodeList()) {
 			int rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
 			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n.ID));
+			t.startRelative(1, n);
+		}
+	}
+	
+	@AbstractCustomGlobal.CustomButton(buttonText="GEN-Path", toolTipText="A sample button")
+	public void genPath() {
+		for(Node n : Tools.getNodeList()) {
+			if(n instanceof FNode) {
+				((FNode)n).resetParentTable();
+			}
+		}
+		
+		for(FNode n : FNode.U) {
+			GTimer t = new GTimer(new PathU(n,n,0.0));
 			t.startRelative(1, n);
 		}
 	}

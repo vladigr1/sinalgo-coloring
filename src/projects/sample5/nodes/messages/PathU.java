@@ -1,6 +1,7 @@
 package projects.sample5.nodes.messages;
 
-
+import projects.sample5.nodes.messages.MaxU.Request;
+import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -8,21 +9,18 @@ import sinalgo.nodes.messages.Message;
  * incremental flooding.
  * This message requires the read-only policy. 
  */
-public class MaxU extends Message {
-	public enum Request{
-		INIT,ACTIVE,DEACTIVE
-	}
-	public Request req;
-	public int num;
-	public int id;
+public class PathU extends Message {
+	public Node UNode;
+	public Node parent;
+	public double length;
 	
 	/**
 	 * Default constructor. 
 	 */
-	public MaxU(Request req, int num, int id) {
-		this.req = req;
-		this.num = num;
-		this.id = id;
+	public PathU(Node UNode, Node parent, double length) {
+		this.UNode = UNode;
+		this.parent = parent;
+		this.length = length;
 	}
 	
 	@Override

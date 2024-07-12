@@ -11,7 +11,9 @@ import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
 import projects.sample5.nodes.messages.AckPayload;
 import projects.sample5.nodes.messages.FloodFindMsg;
 import projects.sample5.nodes.messages.MaxU;
+import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.messages.PayloadMsg;
+import projects.sample5.nodes.timers.GTimer;
 import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
 import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
@@ -19,6 +21,7 @@ import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.nodes.Node;
+import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
@@ -54,7 +57,7 @@ public class FNode extends Node {
 //	Hashtable<Node, RoutingEntry> routingTable = new Hashtable<Node, RoutingEntry>();
 	
 	// messages that could not be sent so far, because no route is known
-	static Vector<FNode> U = new Vector<FNode>();
+	public static Vector<FNode> U = new Vector<FNode>();
 	
 //	/**
 //	 * Method to clear this node's routing table 
@@ -72,8 +75,44 @@ public class FNode extends Node {
 		}
 	}
 	
+	
 	public void GMsg_handle(Message msg) {
 		sendDirect(msg, this);
+	}
+	
+	public class ParentDistnace{
+		public Node parent;
+		public double length;
+		
+		public ParentDistnace( Node parent, double length) {
+			this.parent = parent;
+			this.length = length;
+		}
+		
+	}
+	
+	// [UNode] -> parent_node
+	private Color[] lcolor = {Color.PINK, Color.ORANGE, Color.GREEN, Color.MAGENTA, Color.BLUE, Color.CYAN}; //RED not in use
+	Hashtable<Node, ParentDistnace> parentTable = new Hashtable<Node, ParentDistnace>();
+	public void resetParentTable() {
+		parentTable = new Hashtable<Node, ParentDistnace>();
+	}
+	
+	public void handlePathU(PathU msg) {
+		double distance = this.getPosition().squareDistanceTo(msg.parent.getPosition());
+		
+		ParentDistnace pd = parentTable.get(msg.UNode);
+		double cur_length = msg.length + distance;
+		if (pd == null || (cur_length < pd.length) ) {
+			// shorter length
+			parentTable.put(msg.UNode, new ParentDistnace(msg.parent, cur_length));
+			for(Edge e : outgoingConnections) {
+				send(new PathU(msg.UNode, this, cur_length), e.endNode);
+				if(e.endNode == msg.parent) {
+					e.endNode.setColor(lcolor[msg.UNode.ID % lcolor.length]);
+				}
+			}
+		}
 	}
 	
 	private int maxu_num;
@@ -82,6 +121,9 @@ public class FNode extends Node {
 	public void handleMessages(Inbox inbox) {
 		while(inbox.hasNext()) {
 			Message msg = inbox.next();
+			if(msg instanceof PathU) {
+				handlePathU((PathU)msg);
+			}
 			if(msg instanceof MaxU) {
 				MaxU maxu = (MaxU)msg;
 				
