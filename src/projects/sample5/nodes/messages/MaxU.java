@@ -1,6 +1,7 @@
 package projects.sample5.nodes.messages;
 
 
+import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 
 /**
@@ -14,15 +15,15 @@ public class MaxU extends Message {
 	}
 	public Request req;
 	public int num;
-	public int id;
+	public Node node;
 	
 	/**
 	 * Default constructor. 
 	 */
-	public MaxU(Request req, int num, int id) {
+	public MaxU(Request req, int num, Node node) {
 		this.req = req;
 		this.num = num;
-		this.id = id;
+		this.node = node;
 	}
 	
 	@Override

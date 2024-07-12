@@ -13,6 +13,7 @@ import projects.sample5.nodes.messages.FloodFindMsg;
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.messages.PayloadMsg;
+import projects.sample5.nodes.messages.SendTo;
 import projects.sample5.nodes.timers.GTimer;
 import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
@@ -115,14 +116,32 @@ public class FNode extends Node {
 		}
 	}
 	
+	public void handleSendTo(SendTo msg) {
+		if (this == msg.to) { return ;}
+		
+		if (this == msg.UNode) {
+			for (Edge e : outgoingConnections) {
+				if(e.endNode == msg.to) {
+					send(msg, e.endNode);
+				}
+			}
+		}
+		
+		send(msg, parentTable.get(msg.UNode).parent);
+	}
+	
 	private int maxu_num;
 	private boolean maxu_done;
+	public Node deactivtorNode;
 	@Override
 	public void handleMessages(Inbox inbox) {
 		while(inbox.hasNext()) {
 			Message msg = inbox.next();
 			if(msg instanceof PathU) {
 				handlePathU((PathU)msg);
+			}
+			if(msg instanceof SendTo) {
+				handleSendTo((SendTo)msg);
 			}
 			if(msg instanceof MaxU) {
 				MaxU maxu = (MaxU)msg;
@@ -132,7 +151,7 @@ public class FNode extends Node {
 					maxu_done = false;
 					FNode.U.clear();
 					for(Edge e : outgoingConnections) {
-						send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this.ID), e.endNode);
+						send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
 					}
 					return;
 				}
@@ -147,13 +166,14 @@ public class FNode extends Node {
 					if(maxu.num > maxu_num) {
 						inbox.reset();
 						for(Edge e : outgoingConnections) {
-							send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this.ID), e.endNode);
+							send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
 						}
 						return;
 					}
 				} else if (maxu.req == MaxU.Request.DEACTIVE){
-					if ( (maxu.num > maxu_num)  || (maxu.num == maxu_num) && maxu.id > this.ID) {
+					if ( (maxu.num > maxu_num)  || (maxu.num == maxu_num) && maxu.node.ID > this.ID) {
 						setColor(Color.RED);
+						deactivtorNode =  maxu.node;
 						FNode.U.remove(this);
 						maxu_done = true;
 						return;
@@ -165,101 +185,11 @@ public class FNode extends Node {
 					U.add(this);
 					setColor(Color.BLUE);
 					for(Edge e : outgoingConnections) {
-						send(new MaxU(MaxU.Request.DEACTIVE, maxu_num, this.ID), e.endNode);
+						send(new MaxU(MaxU.Request.DEACTIVE, maxu_num, this), e.endNode);
 					}
 				}
 			}
 		}
-		
-		
-//			// ---------------------------------------------------------------
-//			if(msg instanceof FloodFindMsg) { // This node received a flooding message. 
-//				// ---------------------------------------------------------------
-//				FloodFindMsg m = (FloodFindMsg) msg;
-//				if(m.isFindMessage) { 
-//					// forward the message, it's a find-message that has to be 
-//					// forwarded if the TTL allows. At the same time, update this node's routing
-//					// table s.t. it knows how to route to the sender of the flooding-msg.
-//					boolean forward = true;
-//					if(m.sender.equals(this)) { // the message bounced back - discard the msg
-//						forward = false; 
-//					} else { // update routing table to the sender of this node
-//						RoutingEntry re = routingTable.get(m.sender);
-//						if(re == null) { // add a new routing entry 
-//							routingTable.put(m.sender, new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
-//							useNewRoutingInfo(m.destination, inbox.getSender());
-//						} else if(re.sequenceNumber < m.sequenceID) { // update the existing entry 
-//							re.numHops = m.hopsToSender;
-//							re.sequenceNumber = m.sequenceID;
-//							re.nextHop = inbox.getSender();
-//						} else {
-//							forward = false; // we've already seen this message once - don't forward it a 2nd time
-//						}
-//					}
-//					if(m.destination.equals(this)) { // the lookup has succeeded, this is the node that was searched
-//						this.setColor(Color.BLUE);
-//						FloodFindMsg copy = m.getRealClone();
-//						copy.hopsToSender = 1; // now, this field contains the hops to the destination
-//						copy.isFindMessage = false;
-//						copy.sequenceID = ++this.seqID;
-//						this.send(copy, inbox.getSender()); // send back the echo message
-//						forward = false;
-//					}
-//
-//					if(forward && m.ttl > 1) { // forward the flooding request
-//						FloodFindMsg copy = m.getRealClone();
-//						copy.ttl--;
-//						copy.hopsToSender++;
-//						this.broadcast(copy);
-//					}
-//				} else { // return the message back to the sender
-//					// update the routing table
-//					boolean forward = true;
-//					this.setColor(Color.GREEN);
-//					RoutingEntry re = routingTable.get(m.destination);
-//					if(re == null) { // add a new routing entry 
-//						routingTable.put(m.destination, new RoutingEntry(m.sequenceID, m.hopsToSender, inbox.getSender()));
-//						useNewRoutingInfo(m.destination, inbox.getSender());
-//					} else if(re.sequenceNumber < m.sequenceID) { // update the existing entry 
-//						re.numHops = m.hopsToSender;
-//						re.sequenceNumber = m.sequenceID;
-//						re.nextHop = inbox.getSender();
-//					} else {
-//						forward = false; 
-//					}
-//					if(m.sender.equals(this)) {
-//						// this node sent the request - remove timers
-//						m.retryTimer.deactivate();
-//					} else if(forward) {
-//						re = routingTable.get(m.sender);
-//						if(re != null) {
-//							m.hopsToSender++; // we can modify the message, its a unicast
-//							send(m, re.nextHop);
-//						}
-//					}
-//				}
-//			} 
-//			// ---------------------------------------------------------------
-//			if(msg instanceof PayloadMsg) {
-//				PayloadMsg m = (PayloadMsg) msg;
-//				if(m.destination.equals(this)) { // the message was for this node
-//					if(msg instanceof AckPayload) { // it is an ACK message
-//						m.ackTimer.deactivate();
-//						this.setColor(Color.ORANGE);
-//					} else { // it is a Payload Msg
-//						// handle the payload
-//						this.setColor(Color.YELLOW);
-//						// send back an ACK
-//						AckPayload ack = new AckPayload(m.sender, this);
-//						ack.sequenceNumber = m.sequenceNumber;
-//						ack.ackTimer = m.ackTimer;
-//						sendPayloadMessage(ack);
-//					}
-//				} else { // the message was not for this node -> forward
-//					sendPayloadMessage(m);
-//				}
-//			} 
-//		}
 	}
 
 	/* (non-Javadoc)
@@ -277,13 +207,11 @@ public class FNode extends Node {
 	public void sendMessageTo() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			public void handleNodeSelectedEvent(Node n) {
-				if(n == null) {
+				if(n == null && !(n instanceof FNode) ) {
 					return; // aborted
 				}
-				PayloadMsg msg = new PayloadMsg(n, FNode.this);
-				msg.requireACK = true;
-				msg.sequenceNumber = ++FNode.this.seqID;
-				PayloadMessageTimer t = new PayloadMessageTimer(msg);
+				FNode to = (FNode)n;
+				GTimer t = new GTimer(new SendTo(to, to.deactivtorNode));
 				t.startRelative(1, FNode.this);
 			}
 		}, "Select a node to send a message to...");

@@ -102,7 +102,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		int max = Tools.getNodeList().size();
 		for(Node n : Tools.getNodeList()) {
 			int rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
-			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n.ID));
+			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
 			t.startRelative(1, n);
 		}
 	}
