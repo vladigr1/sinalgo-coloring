@@ -68,7 +68,7 @@ public abstract class MobilityModel extends Model {
 	 */
 	protected MobilityModel() {
 		if(firstTime && !Configuration.mobility) {
-			Main.warning("Some nodes are using a mobility model even though mobility is explicitly turned off in the XML Configuration file.");
+			//Main.warning("Some nodes are using a mobility model even though mobility is explicitly turned off in the XML Configuration file.");
 			firstTime = false; // important to only have one message. 
 		}
 	}
@@ -79,7 +79,7 @@ public abstract class MobilityModel extends Model {
 	 */
 	protected MobilityModel(boolean check) {
 		if(check && firstTime && !Configuration.mobility) {
-			Main.warning("Some nodes are using an mobility model even though mobility is explicitly turned off in the XML Configuration file.");
+			//Main.warning("Some nodes are using an mobility model even though mobility is explicitly turned off in the XML Configuration file.");
 			firstTime = false;
 		}
 	}
