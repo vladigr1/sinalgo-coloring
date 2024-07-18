@@ -59,6 +59,7 @@ public class FNode extends Node {
 	
 	// messages that could not be sent so far, because no route is known
 	public static Vector<FNode> U = new Vector<FNode>();
+	public static  Hashtable<Node, Integer> numOfSendedMessagesFromNode = new Hashtable<Node, Integer>();
 	
 //	/**
 //	 * Method to clear this node's routing table 
@@ -105,10 +106,17 @@ public class FNode extends Node {
 		ParentDistnace pd = parentTable.get(msg.UNode);
 		double cur_length = msg.length + distance;
 		if (pd == null || (cur_length < pd.length) ) {
+			Integer currentMax = numOfSendedMessagesFromNode.get(msg.UNode);
+			if(currentMax == null)
+			{
+				currentMax = 0;
+			}
+			Integer myNumIteration = msg.numIteration + 1;
+			numOfSendedMessagesFromNode.put(msg.UNode, Math.max(currentMax,myNumIteration));
 			// shorter length
 			parentTable.put(msg.UNode, new ParentDistnace(msg.parent, cur_length));
 			for(Edge e : outgoingConnections) {
-				send(new PathU(msg.UNode, this, cur_length), e.endNode);
+				send(new PathU(msg.UNode, this, cur_length, myNumIteration), e.endNode);
 				if(e.endNode == msg.parent) {
 					e.endNode.setColor(lcolor[msg.UNode.ID % lcolor.length]);
 				}

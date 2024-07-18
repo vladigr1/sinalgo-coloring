@@ -10,6 +10,7 @@ import sinalgo.nodes.messages.Message;
  * This message requires the read-only policy. 
  */
 public class PathU extends Message {
+	public int numIteration;
 	public Node UNode;
 	public Node parent;
 	public double length;
@@ -17,7 +18,8 @@ public class PathU extends Message {
 	/**
 	 * Default constructor. 
 	 */
-	public PathU(Node UNode, Node parent, double length) {
+	public PathU(Node UNode, Node parent, double length, int numIteration) {
+		this.numIteration = numIteration;
 		this.UNode = UNode;
 		this.parent = parent;
 		this.length = length;
