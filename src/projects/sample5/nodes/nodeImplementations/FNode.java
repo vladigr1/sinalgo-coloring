@@ -213,6 +213,7 @@ public class FNode extends Node {
 	
 	@NodePopupMethod(menuText = "Send Message To...")
 	public void sendMessageTo() {
+		Global.systemState = 3;
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			public void handleNodeSelectedEvent(Node n) {
 				if(n == null && !(n instanceof FNode) ) {
