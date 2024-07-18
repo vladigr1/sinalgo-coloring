@@ -1,9 +1,13 @@
 package projects.sample5.nodes.nodeImplementations;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+
+import javax.tools.Tool;
+
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -14,10 +18,12 @@ import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.messages.PayloadMsg;
 import projects.sample5.nodes.messages.SendTo;
+import projects.sample5.nodes.messages.MaxU.Request;
 import projects.sample5.nodes.timers.GTimer;
 import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
 import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
+import projects.sample5.CustomGlobal;
 import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.helper.NodeSelectionHandler;
@@ -27,6 +33,9 @@ import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.nodes.messages.NackBox;
+import sinalgo.runtime.Global;
+import sinalgo.runtime.Main;
+import sinalgo.runtime.SynchronousRuntimeThread;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
@@ -101,7 +110,7 @@ public class FNode extends Node {
 	}
 	
 	public void handlePathU(PathU msg) {
-		double distance = this.getPosition().squareDistanceTo(msg.parent.getPosition());
+		double distance = this.getPosition().distanceTo(msg.parent.getPosition());
 		
 		ParentDistnace pd = parentTable.get(msg.UNode);
 		double cur_length = msg.length + distance;
