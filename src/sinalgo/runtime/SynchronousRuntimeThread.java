@@ -37,8 +37,10 @@
 package sinalgo.runtime;
 
 
+import java.io.IOException;
 import java.util.Date;
 
+import projects.sample5.CustomGlobal;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
@@ -97,7 +99,7 @@ public class SynchronousRuntimeThread extends Thread {
 			// INCREMENT THE GLOBAL TIME by 1
 			++Global.currentTime;
 			Global.isEvenRound = !Global.isEvenRound; // flip the bit
-			
+			Global.numOfRounds++; // similar as Global.currentTime?
 			Global.startTimeOfRound = new Date();
 			Global.numberOfMessagesInThisRound = 0;
 
@@ -124,9 +126,35 @@ public class SynchronousRuntimeThread extends Thread {
 			
 			// Perform the step for each node
 			try{
+				//Global.numOfMessagesSendInThisCycle = 0;
 				for(Node n : Runtime.nodes) {
 					n.step();
 				}
+				if(Global.numberOfMessagesInThisRound == 0 && Global.systemState == 3)
+				{
+					CustomGlobal.numOfRoundsForStepThree = Global.numOfRounds;
+					Main.warning("Sending message done in " + Global.numOfRounds + " cycles!");
+					try {
+						CustomGlobal.writeStatisticsToFile();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(Global.numberOfMessagesInThisRound == 0 && Global.systemState == 2)
+				{
+					CustomGlobal.numOfRoundsForStepTwo = Global.numOfRounds;
+					Main.warning("Building Paths group finished in " + Global.numOfRounds + "!");
+				}
+				if(Global.numberOfMessagesInThisRound == 0 && Global.systemState == 1)
+				{
+					CustomGlobal.numOfRoundsForStepOne = Global.numOfRounds;
+					Main.warning("Building U group finished in " + Global.numOfRounds + "!");
+					CustomGlobal.genPath();
+				}
+				
+				
+				//Global.firstCycleOfThisState = false;
 			} catch(WrongConfigurationException wCE){
 				Main.minorError(wCE); // in gui, a popup is shown. in batch, exits.
 				if(Global.isGuiMode) {
@@ -135,6 +163,9 @@ public class SynchronousRuntimeThread extends Thread {
 				}
 				Global.isRunning = false;
 				return;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
 			Global.customGlobal.postRound();

@@ -57,6 +57,7 @@ import sinalgo.tools.logging.Logging;
  */
 public class Global {
 	
+	static public int systemState = 0;
 	/**
 	 * A boolean flag indicating whether the simulation is runing or not. This flag is used to block mouse input (like tooltip...) and 
 	 * zooming during the simulation.
@@ -117,7 +118,10 @@ public class Global {
  	 * synchronous simulation mode. 
 	 */
 	public static boolean isEvenRound = true;
-	
+	public static int numOfRounds = 0;
+	public int numOfRoundsForStepOne = 0;
+	public int numOfRoundsForStepTwo = 0;
+	public int numOfRoundsForStepThree = 0;
 	/**
 	 * The Message Transmission Model. This Model indicates how long it takes for a message to go
 	 * from one node to another. This model is global for all nodes.
