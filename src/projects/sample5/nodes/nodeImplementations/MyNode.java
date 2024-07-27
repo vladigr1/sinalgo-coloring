@@ -1,81 +1,28 @@
 package projects.sample5.nodes.nodeImplementations;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Vector;
-
-import javax.tools.Tool;
-
-import java.util.Map.Entry;
-import java.util.Random;
-
 import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
-import projects.sample5.nodes.messages.AckPayload;
-import projects.sample5.nodes.messages.FloodFindMsg;
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
-import projects.sample5.nodes.messages.PayloadMsg;
 import projects.sample5.nodes.messages.SendTo;
-import projects.sample5.nodes.messages.MaxU.Request;
 import projects.sample5.nodes.timers.GTimer;
-import projects.sample5.nodes.timers.PayloadMessageTimer;
-import projects.sample5.nodes.timers.RetryFloodingTimer;
-import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
-import projects.sample5.CustomGlobal;
-import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.nodes.Node;
-import sinalgo.nodes.Position;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
 import sinalgo.nodes.messages.NackBox;
 import sinalgo.runtime.Global;
-import sinalgo.runtime.Main;
-import sinalgo.runtime.SynchronousRuntimeThread;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.Logging;
 
-/**
- * A node that implements a flooding strategy to determine paths to other nodes.
- */
 public class MyNode extends Node {
-
-
-//	/**
-//	 * A routing table entry
-//	 */
-//	public class RoutingEntry {
-//		public int sequenceNumber; // sequence number used when this entry was created
-//		public int numHops; // number of hops to reach destination
-//		public Node nextHop; // next hop to take  
-//
-//		public RoutingEntry(int seqNumber, int hops, Node hop) {
-//			this.sequenceNumber = seqNumber;
-//			this.numHops = hops;
-//			this.nextHop = hop;
-//		}
-//	}
 	
-	// counter, incremented and added for each msg sent (not forwarded) by this node
-	public int seqID = 0; // an ID used to distinguish successive msg
-	
-	// The routing table of this node, maps destination node to a routing entry
-//	Hashtable<Node, RoutingEntry> routingTable = new Hashtable<Node, RoutingEntry>();
-	
-	// messages that could not be sent so far, because no route is known
 	public static Vector<MyNode> U = new Vector<MyNode>();
 	public static  Hashtable<Node, Integer> numOfSendedMessagesFromNode = new Hashtable<Node, Integer>();
-	
-//	/**
-//	 * Method to clear this node's routing table 
-//	 */
-//	public void clearRoutingTable() {
-//		routingTable.clear();
-//	}
 	
 	@Override
 	public void checkRequirements() throws WrongConfigurationException {
@@ -113,7 +60,7 @@ public class MyNode extends Node {
 		
 		ParentDistnace pd = parentTable.get(msg.UNode);
 		double cur_length = msg.length + distance;
-		if (pd == null || (cur_length < pd.length) ) {
+		if (pd == null || (cur_length < pd.length) ) { // Check for shorter path
 			Integer currentMax = numOfSendedMessagesFromNode.get(msg.UNode);
 			if(currentMax == null)
 			{
@@ -121,7 +68,6 @@ public class MyNode extends Node {
 			}
 			Integer myNumIteration = msg.numIteration + 1;
 			numOfSendedMessagesFromNode.put(msg.UNode, Math.max(currentMax,myNumIteration));
-			// shorter length
 			parentTable.put(msg.UNode, new ParentDistnace(msg.parent, cur_length));
 			for(Edge e : outgoingConnections) {
 				send(new PathU(msg.UNode, this, cur_length, myNumIteration), e.endNode);
@@ -226,7 +172,7 @@ public class MyNode extends Node {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			public void handleNodeSelectedEvent(Node n) {
 				if(n == null && !(n instanceof MyNode) ) {
-					return; // aborted
+					return;
 				}
 				MyNode to = (MyNode)n;
 				GTimer t = new GTimer(new SendTo(to, to.deactivtorNode));
@@ -234,89 +180,39 @@ public class MyNode extends Node {
 			}
 		}, "Select a node to send a message to...");
 	}
-
-	/**
-	 * Tries to send a message if there is a routing entry. 
-	 * If there is no routing entry, a search is started, and the
-	 * message is put in a buffer of messages on hold.
-	 * @param msg
-	 * @param to
-	 */
-//	public void sendPayloadMessage(PayloadMsg msg) {
-//		RoutingEntry re = routingTable.get(msg.destination);
-//		if(re != null) {
-//			if(msg.sender.equals(this) && msg.requireACK) { // this node wants to have the message sent - it waits for an ack
-//				RetryPayloadMessageTimer rpmt = new RetryPayloadMessageTimer(msg);
-//				rpmt.startRelative(re.numHops * 3, this); // We wait a bit longer than necessary
-//				if(msg.ackTimer != null){
-//					msg.ackTimer.deactivate();
-//				}
-//				msg.ackTimer = rpmt;
-//			}
-//			send(msg, re.nextHop);
-//			return ;
-//		} else {
-//			lookForNode(msg.destination, 4);
-//			messagesOnHold.add(msg);
-//		}
-//	}
-	
-//	/**
-//	 * Starts a search for a given node with the given TTL
-//	 * @param destination
-//	 * @param ttl
-//	 */
-//	public void lookForNode(Node destination, int ttl) {
-//		if(ttl > 10000000) { // this limits to graphs of diameter 10^7 ....
-//			return; // we've already searched too far - there is probably no connection! 
-//		}
-//
-//		FloodFindMsg m = new FloodFindMsg(++this.seqID, this, destination);
-//		m.ttl = ttl;
-//		RetryFloodingTimer rft = new RetryFloodingTimer(destination, m.ttl);
-//		// The TTL must depend on the message transmission time. We assume here a constant msg. transm. time of 1 unit.
-//		rft.startRelative(m.ttl * 2 + 1, this); 
-//		m.retryTimer = rft;
-//		this.broadcast(m);
-//	}
-//	
-//	private void useNewRoutingInfo(Node destination, Node nextHop) {
-//		Iterator<PayloadMsg> it = messagesOnHold.iterator();
-//		while(it.hasNext()) {
-//			PayloadMsg m = it.next();
-//			if(m.destination.equals(destination)) {
-//				this.sendPayloadMessage(m);
-//				it.remove();
-//			}
-//		}
-//	}
-	
-	@Override
-	public void init() {
-	}
-
-	@Override
-	public void neighborhoodChange() {
-		// we could remove routing-table entries that use this neighbor
-	}
-
-	@Override
-	public void preStep() {
-	}
-
-	@Override
-	public void postStep() {
-	}
-	
+		
 	/* (non-Javadoc)
 	 * @see sinalgo.nodes.Node#toString()
 	 */
 	public String toString() {
-		// show the routing table entries
-//		String r = "";
-//		for(Entry<Node, RoutingEntry> e : routingTable.entrySet()) {
-//			r += e.getKey().ID + " => " + e.getValue().nextHop.ID + " (" + e.getValue().numHops+ ")"+ "\n";
-//		}
 		return "maxu_num: " + String.valueOf(maxu_num);
+	}
+
+
+	@Override
+	public void preStep() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void neighborhoodChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void postStep() {
+		// TODO Auto-generated method stub
+		
 	}
 }
