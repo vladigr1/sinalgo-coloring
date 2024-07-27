@@ -47,7 +47,7 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import projects.sample5.nodes.messages.MaxIndependentSet;
-import projects.sample5.nodes.messages.PathU;
+import projects.sample5.nodes.messages.ShortestPathInU;
 import projects.sample5.nodes.nodeImplementations.MyNode;
 import projects.sample5.nodes.timers.MyTimer;
 import projects.sample6.nodes.messages.MarkMessage;
@@ -125,7 +125,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		}
 		
 		for(MyNode n : MyNode.U) {	
-			MyTimer t = new MyTimer(new PathU(n,n,0.0,0));
+			MyTimer t = new MyTimer(new ShortestPathInU(n,n,0.0,0));
 			t.startRelative(1, n);
 		}
 		Global.systemState = 2;

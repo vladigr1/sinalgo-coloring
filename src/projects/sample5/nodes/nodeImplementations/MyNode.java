@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
 import projects.sample5.nodes.messages.MaxIndependentSet;
-import projects.sample5.nodes.messages.PathU;
+import projects.sample5.nodes.messages.ShortestPathInU;
 import projects.sample5.nodes.messages.SendTo;
 import projects.sample5.nodes.timers.MyTimer;
 import sinalgo.configuration.WrongConfigurationException;
@@ -55,7 +55,7 @@ public class MyNode extends Node {
 		parentTable = new Hashtable<Node, ParentDistnace>();
 	}
 	
-	public void handlePathU(PathU msg) {
+	public void handlePathU(ShortestPathInU msg) {
 		double distance = this.getPosition().distanceTo(msg.parent.getPosition());
 		
 		ParentDistnace pd = parentTable.get(msg.UNode);
@@ -70,7 +70,7 @@ public class MyNode extends Node {
 			numOfSendedMessagesFromNode.put(msg.UNode, Math.max(currentMax,myNumIteration));
 			parentTable.put(msg.UNode, new ParentDistnace(msg.parent, cur_length));
 			for(Edge e : outgoingConnections) {
-				send(new PathU(msg.UNode, this, cur_length, myNumIteration), e.endNode);
+				send(new ShortestPathInU(msg.UNode, this, cur_length, myNumIteration), e.endNode);
 				if(e.endNode == msg.parent) {
 					e.endNode.setColor(lcolor[msg.UNode.ID % lcolor.length]);
 				}
@@ -99,8 +99,8 @@ public class MyNode extends Node {
 	public void handleMessages(Inbox inbox) {
 		while(inbox.hasNext()) {
 			Message msg = inbox.next();
-			if(msg instanceof PathU) {
-				handlePathU((PathU)msg);
+			if(msg instanceof ShortestPathInU) {
+				handlePathU((ShortestPathInU)msg);
 			}
 			if(msg instanceof SendTo) {
 				handleSendTo((SendTo)msg);

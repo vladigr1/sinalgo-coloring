@@ -9,7 +9,7 @@ import sinalgo.nodes.messages.Message;
  * incremental flooding.
  * This message requires the read-only policy. 
  */
-public class PathU extends Message {
+public class ShortestPathInU extends Message {
 	public int numIteration;
 	public Node UNode;
 	public Node parent;
@@ -18,7 +18,7 @@ public class PathU extends Message {
 	/**
 	 * Default constructor. 
 	 */
-	public PathU(Node UNode, Node parent, double length, int numIteration) {
+	public ShortestPathInU(Node UNode, Node parent, double length, int numIteration) {
 		this.numIteration = numIteration;
 		this.UNode = UNode;
 		this.parent = parent;
