@@ -11,7 +11,9 @@ import sinalgo.nodes.messages.Message;
  */
 public class MaxIndependentSet extends Message {
 	public enum Request{
-		INIT,ACTIVE,DEACTIVE
+		INIT,
+		ACTIVATE,
+		DEACTIVATE
 	}
 	public Request req;
 	public long num;

@@ -150,7 +150,7 @@ public class SynchronousRuntimeThread extends Thread {
 				{
 					CustomGlobal.numOfRoundsForStepOne = Global.numOfRounds;
 					Main.warning("Building U group finished in " + CustomGlobal.numOfRoundsForStepOne + "!");
-					CustomGlobal.genPath();
+					CustomGlobal.generatePaths();
 				}
 				
 				

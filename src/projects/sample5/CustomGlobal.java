@@ -100,7 +100,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		}
 	}
 	
-	@AbstractCustomGlobal.CustomButton(buttonText="GEN-U & PATHs", toolTipText="A sample button")
+	@AbstractCustomGlobal.CustomButton(buttonText="GenerateU & Create Paths", toolTipText="A sample button")
 	public void sampleButton() {
 		Global.systemState = 1;
 		Random rand = new Random();
@@ -116,8 +116,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		}
 	}
 	
-	//@AbstractCustomGlobal.CustomButton(buttonText="GEN-Path", toolTipText="A sample button")
-	static public void genPath() throws IOException {
+	static public void generatePaths() throws IOException {
 		for(Node n : Tools.getNodeList()) {
 			if(n instanceof MyNode) {
 				((MyNode)n).resetParentTable();

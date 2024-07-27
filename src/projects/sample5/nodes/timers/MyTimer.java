@@ -23,7 +23,7 @@ public class MyTimer extends Timer {
 	
 	@Override
 	public void fire() {
-		((MyNode) node).GMsg_handle(msg);
+		((MyNode) node).sendDirectWrapper(msg);
 	}
 
 }
