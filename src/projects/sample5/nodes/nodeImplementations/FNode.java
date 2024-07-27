@@ -180,7 +180,8 @@ public class FNode extends Node {
 				return false;
 			}
 		}
-			
+
+		deactivtorNode =  this;
 		return true;
 	}
 	
@@ -238,7 +239,7 @@ public class FNode extends Node {
 					return; // aborted
 				}
 				FNode to = (FNode)n;
-				GTimer t = new GTimer(new SendTo(to, to.deactivtorNode));
+				DirectMessageTimer t = new DirectMessageTimer(new SendTo(to, to.deactivtorNode), FNode.this);
 				t.startRelative(1, FNode.this);
 			}
 		}, "Select a node to send a message to...");
@@ -321,11 +322,6 @@ public class FNode extends Node {
 	 * @see sinalgo.nodes.Node#toString()
 	 */
 	public String toString() {
-		// show the routing table entries
-//		String r = "";
-//		for(Entry<Node, RoutingEntry> e : routingTable.entrySet()) {
-//			r += e.getKey().ID + " => " + e.getValue().nextHop.ID + " (" + e.getValue().numHops+ ")"+ "\n";
-//		}
 		return "maxu_num: " + String.valueOf(maxu_num);
 	}
 }
