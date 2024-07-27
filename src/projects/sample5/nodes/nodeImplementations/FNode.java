@@ -24,7 +24,6 @@ import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
 import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
 import projects.sample5.CustomGlobal;
-import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.nodes.Node;
@@ -103,7 +102,7 @@ public class FNode extends Node {
 	}
 	
 	// [UNode] -> parent_node
-	private Color[] lcolor = {Color.PINK, Color.ORANGE, Color.GREEN, Color.MAGENTA, Color.BLUE, Color.CYAN}; //RED not in use
+	private Color[] lcolor = {Color.PINK, Color.BLUE, Color.YELLOW, Color.MAGENTA, Color.ORANGE, Color.CYAN};
 	Hashtable<Node, ParentDistnace> parentTable = new Hashtable<Node, ParentDistnace>();
 	public void resetParentTable() {
 		parentTable = new Hashtable<Node, ParentDistnace>();
@@ -145,7 +144,7 @@ public class FNode extends Node {
 		}		
 	}
 	
-	private int maxu_num;
+	private double maxu_num;
 	private boolean maxu_done;
 	public Node deactivtorNode;
 	public boolean handleMaxUReturnToContinue(MaxU msg){

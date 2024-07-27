@@ -14,13 +14,13 @@ public class MaxU extends Message {
 		INIT,ACTIVE,DEACTIVE
 	}
 	public Request req;
-	public int num;
+	public double num;
 	public Node node;
 	
 	/**
 	 * Default constructor. 
 	 */
-	public MaxU(Request req, int num, Node node) {
+	public MaxU(Request req, double num, Node node) {
 		this.req = req;
 		this.num = num;
 		this.node = node;

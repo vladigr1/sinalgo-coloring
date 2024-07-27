@@ -158,16 +158,20 @@
 		<!--  Node storage, position transformation                                -->
 		<!--***********************************************************************-->
 		<!--Transformation implementation for 2D. (This is used to translate between the logic positions used by the simulation to the 2D coordinate system used by the GUI to display the graph)-->
-		<guiPositionTransformation2D value="sinalgo.gui.transformation.Transformation2D" />
+		<guiPositionTransformation2D
+			value="sinalgo.gui.transformation.Transformation2D" />
 
 		<!--Transformation implementation for 3D. (This is used to translate between the logic positions used by the simulation to the 2D coordinate system used by the GUI to display the graph)-->
-		<guiPositionTransformation3D value="sinalgo.gui.transformation.Transformation3D" />
+		<guiPositionTransformation3D
+			value="sinalgo.gui.transformation.Transformation3D" />
 
 		<!--Node collection implementation for 2D.-->
-		<nodeCollection2D value="sinalgo.runtime.nodeCollection.Geometric2DNodeCollection" />
+		<nodeCollection2D
+			value="sinalgo.runtime.nodeCollection.Geometric2DNodeCollection" />
 
 		<!--Node collection implementation for 3D.-->
-		<nodeCollection3D value="sinalgo.runtime.nodeCollection.Geometric3DNodeCollection" />
+		<nodeCollection3D
+			value="sinalgo.runtime.nodeCollection.Geometric3DNodeCollection" />
 
 		<!--***********************************************************************-->
 		<!--  Diverse Settings                                                     -->
@@ -207,31 +211,32 @@
 
 	</Framework>
 	<Custom>
-<MessageTransmission ConstantTime="1"/>
-	
-<BigEdge strokeWidth="2"/>
+		<MessageTransmission ConstantTime="1" />
 
-<myTest value="80"/>
+		<BigEdge strokeWidth="2" />
 
-<Node defaultSize="10" />
+		<myTest value="80" />
 
-<GeometricNodeCollection rMax="800"/>
-<UDG rMax="800"/>
+		<Node defaultSize="10" />
 
-<SINR alpha="2" beta="0.7" noise="0"/>
+		<GeometricNodeCollection rMax="500" />
+		<UDG rMax="150" />
 
-<RandomWayPoint>
-	<Speed distribution="Gaussian" mean="10" variance="20" />
-	<WaitingTime distribution="Poisson" lambda="10" />
-</RandomWayPoint>
+		<SINR alpha="2" beta="0.7" noise="0" />
 
-<RandomDirection>
-	<NodeSpeed distribution="Gaussian" mean="3" variance="5" />
-	<WaitingTime distribution="Poisson" lambda="80" />
-	<MoveTime distribution="Uniform" min="2" max="5" />
-</RandomDirection>
+		<RandomWayPoint>
+			<Speed distribution="Gaussian" mean="10" variance="20" />
+			<WaitingTime distribution="Poisson" lambda="10" />
+		</RandomWayPoint>
 
-<QUDG rMin="30" rMax="50" ProbabilityType="constant" connectionProbability="0.6"/>
-																																							</Custom>
+		<RandomDirection>
+			<NodeSpeed distribution="Gaussian" mean="3" variance="5" />
+			<WaitingTime distribution="Poisson" lambda="80" />
+			<MoveTime distribution="Uniform" min="2" max="5" />
+		</RandomDirection>
+
+		<QUDG rMin="30" rMax="50" ProbabilityType="constant"
+			connectionProbability="0.6" />
+	</Custom>
 </Document>
 

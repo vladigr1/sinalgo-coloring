@@ -51,7 +51,6 @@ import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.nodeImplementations.FNode;
-import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
 import sinalgo.runtime.Global;
@@ -83,7 +82,6 @@ import sinalgo.tools.Tools;
 
 public class CustomGlobal extends AbstractCustomGlobal{
 	
-	public static int maxDegree = 0;
 	static public int numOfRoundsForStepOne = 0;
 	static public int numOfRoundsForStepTwo = 0;
 	static public int numOfRoundTotal = 0;
@@ -91,23 +89,18 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		return false;
 	}
 
-	@AbstractCustomGlobal.CustomButton(buttonText="GEN-U & PATHs", toolTipText="A sample button")
+	@AbstractCustomGlobal.CustomButton(buttonText="Generate routing table", toolTipText="Generate routing table")
 	public void sampleButton() {
 		Global.systemState = 1;
 		Random rand = new Random();
-		int max = Tools.getNodeList().size();
+		double max = Tools.getNodeList().size();
 		for(Node n : Tools.getNodeList()) {
-			if(n.outgoingConnections.size() > maxDegree)
-			{
-				maxDegree = n.outgoingConnections.size(); // Find max degree
-			}
-			int rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
+			double rand_maxu = rand.nextDouble(Math.pow(max,4) + 1);
 			DirectMessageTimer t = new DirectMessageTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n), n);
 			t.startRelative(1, n);
 		}
 	}
 	
-	//@AbstractCustomGlobal.CustomButton(buttonText="GEN-Path", toolTipText="A sample button")
 	static public void genPath() throws IOException {
 		for(Node n : Tools.getNodeList()) {
 			if(n instanceof FNode) {
@@ -124,6 +117,14 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	
 	static public void toCsv() throws IOException
 	{
+		int maxDegree = 0;
+		for(Node n : Tools.getNodeList()) {
+			if(n.outgoingConnections.size() > maxDegree)
+			{
+				maxDegree = n.outgoingConnections.size(); // Find max degree
+			}
+		}
+		
 		String strNumOfNodes = "Number vertices in a graph: " + Tools.getNodeList().size() + "\n";
 		String strSizeOfU = "Size of U: " + FNode.U.size() + "\n";
 		String strGenerateU = "Number of rounds for building U: " + numOfRoundsForStepOne + "\n";
@@ -133,12 +134,18 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		int radious = Collections.max(FNode.numOfSendedMessagesFromNode.values());
 		String strDiameter = "Diameter of a graph: " + radious * 2 + "\n";
 		
+		String header = "num_v, max_deg_v, num_v_in_u, leng_path, approximation_diameter, rounds_build_u_and_build_path\n";
+		String line = 
+				Tools.getNodeList().size() + ", " +
+				maxDegree + ", " +
+				FNode.U.size() + ", " +
+				String.valueOf(numOfRoundTotal - numOfRoundsForStepTwo) + ", " +
+				radious  + ", " +
+				numOfRoundsForStepTwo;
+				
 		BufferedWriter writer = new BufferedWriter(new FileWriter("result.csv"));
-		writer.write(strGenerateU);
-		writer.append(strGeneratePath);
-		writer.append(strSendMessage);
-		writer.append(strMaxDegree);
-		writer.append(strDiameter);
+		writer.write(header);
+		writer.append(line);
 		writer.close();
 	
 	}
