@@ -219,8 +219,8 @@
 
 		<Node defaultSize="10" />
 
-		<GeometricNodeCollection rMax="500" />
-		<UDG rMax="150" />
+		<GeometricNodeCollection rMax="150" />
+		<UDG rMax="100" />
 
 		<SINR alpha="2" beta="0.7" noise="0" />
 
