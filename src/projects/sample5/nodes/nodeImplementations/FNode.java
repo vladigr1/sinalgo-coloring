@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
+import projects.defaultProject.nodes.timers.DirectMessageTimer;
 import projects.sample5.nodes.messages.AckPayload;
 import projects.sample5.nodes.messages.FloodFindMsg;
 import projects.sample5.nodes.messages.MaxU;
@@ -19,7 +20,6 @@ import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.messages.PayloadMsg;
 import projects.sample5.nodes.messages.SendTo;
 import projects.sample5.nodes.messages.MaxU.Request;
-import projects.sample5.nodes.timers.GTimer;
 import projects.sample5.nodes.timers.PayloadMessageTimer;
 import projects.sample5.nodes.timers.RetryFloodingTimer;
 import projects.sample5.nodes.timers.RetryPayloadMessageTimer;
@@ -245,62 +245,6 @@ public class FNode extends Node {
 		}, "Select a node to send a message to...");
 	}
 
-	/**
-	 * Tries to send a message if there is a routing entry. 
-	 * If there is no routing entry, a search is started, and the
-	 * message is put in a buffer of messages on hold.
-	 * @param msg
-	 * @param to
-	 */
-//	public void sendPayloadMessage(PayloadMsg msg) {
-//		RoutingEntry re = routingTable.get(msg.destination);
-//		if(re != null) {
-//			if(msg.sender.equals(this) && msg.requireACK) { // this node wants to have the message sent - it waits for an ack
-//				RetryPayloadMessageTimer rpmt = new RetryPayloadMessageTimer(msg);
-//				rpmt.startRelative(re.numHops * 3, this); // We wait a bit longer than necessary
-//				if(msg.ackTimer != null){
-//					msg.ackTimer.deactivate();
-//				}
-//				msg.ackTimer = rpmt;
-//			}
-//			send(msg, re.nextHop);
-//			return ;
-//		} else {
-//			lookForNode(msg.destination, 4);
-//			messagesOnHold.add(msg);
-//		}
-//	}
-	
-//	/**
-//	 * Starts a search for a given node with the given TTL
-//	 * @param destination
-//	 * @param ttl
-//	 */
-//	public void lookForNode(Node destination, int ttl) {
-//		if(ttl > 10000000) { // this limits to graphs of diameter 10^7 ....
-//			return; // we've already searched too far - there is probably no connection! 
-//		}
-//
-//		FloodFindMsg m = new FloodFindMsg(++this.seqID, this, destination);
-//		m.ttl = ttl;
-//		RetryFloodingTimer rft = new RetryFloodingTimer(destination, m.ttl);
-//		// The TTL must depend on the message transmission time. We assume here a constant msg. transm. time of 1 unit.
-//		rft.startRelative(m.ttl * 2 + 1, this); 
-//		m.retryTimer = rft;
-//		this.broadcast(m);
-//	}
-//	
-//	private void useNewRoutingInfo(Node destination, Node nextHop) {
-//		Iterator<PayloadMsg> it = messagesOnHold.iterator();
-//		while(it.hasNext()) {
-//			PayloadMsg m = it.next();
-//			if(m.destination.equals(destination)) {
-//				this.sendPayloadMessage(m);
-//				it.remove();
-//			}
-//		}
-//	}
-	
 	@Override
 	public void init() {
 	}

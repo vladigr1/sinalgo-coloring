@@ -46,10 +46,11 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
+import projects.defaultProject.nodes.timers.DirectMessageTimer;
+import projects.defaultProject.nodes.timers.MessageTimer;
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.nodeImplementations.FNode;
-import projects.sample5.nodes.timers.GTimer;
 import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -101,7 +102,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 				maxDegree = n.outgoingConnections.size(); // Find max degree
 			}
 			int rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
-			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
+			DirectMessageTimer t = new DirectMessageTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n), n);
 			t.startRelative(1, n);
 		}
 	}
@@ -115,7 +116,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		}
 		
 		for(FNode n : FNode.U) {	
-			GTimer t = new GTimer(new PathU(n,n,0.0,0));
+			DirectMessageTimer t = new DirectMessageTimer(new PathU(n,n,0.0,0), n);
 			t.startRelative(1, n);
 		}
 		Global.systemState = 2;
