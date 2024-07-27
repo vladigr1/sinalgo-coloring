@@ -82,32 +82,14 @@ import sinalgo.tools.Tools;
 
 public class CustomGlobal extends AbstractCustomGlobal{
 	
-	/* (non-Javadoc)
-	 * @see runtime.AbstractCustomGlobal#hasTerminated()
-	 */
 	public static int maxDegree = 0;
 	static public int numOfRoundsForStepOne = 0;
 	static public int numOfRoundsForStepTwo = 0;
-	static public int numOfRoundsForStepThree = 0;
+	static public int numOfRoundTotal = 0;
 	public boolean hasTerminated() {
 		return false;
 	}
 
-//	@GlobalMethod(menuText="Clear Routing Tables")
-//	public void clearRoutingTalbes() {
-//		for(Node n : Tools.getNodeList()) {
-//			FNode fn = (FNode) n;
-//			fn.clearRoutingTable();
-//		}
-//	}
-	
-	@GlobalMethod(menuText="Reset Node Color")
-	public void resetNodeColor() {
-		for(Node n : Tools.getNodeList()) {
-			n.setColor(Color.BLACK);
-		}
-	}
-	
 	@AbstractCustomGlobal.CustomButton(buttonText="GEN-U & PATHs", toolTipText="A sample button")
 	public void sampleButton() {
 		Global.systemState = 1;
@@ -139,18 +121,18 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		Global.systemState = 2;
 	}
 	
-	static public void writeStatisticsToFile() throws IOException
+	static public void toCsv() throws IOException
 	{
 		String strNumOfNodes = "Number vertices in a graph: " + Tools.getNodeList().size() + "\n";
 		String strSizeOfU = "Size of U: " + FNode.U.size() + "\n";
 		String strGenerateU = "Number of rounds for building U: " + numOfRoundsForStepOne + "\n";
 		String strGeneratePath = "Number of rounds for building Path: " + numOfRoundsForStepTwo + "\n";
-		String strSendMessage = "Number of rounds for sending message: " + numOfRoundsForStepThree + "\n";
+		String strSendMessage = "Number of rounds for sending message: " + numOfRoundTotal + "\n";
 		String strMaxDegree = "Max degree in a graph is : " + maxDegree + "\n";
 		int radious = Collections.max(FNode.numOfSendedMessagesFromNode.values());
 		String strDiameter = "Diameter of a graph: " + radious * 2 + "\n";
 		
-		BufferedWriter writer = new BufferedWriter(new FileWriter("Statistics.txt"));
+		BufferedWriter writer = new BufferedWriter(new FileWriter("result.csv"));
 		writer.write(strGenerateU);
 		writer.append(strGeneratePath);
 		writer.append(strSendMessage);

@@ -138,20 +138,55 @@ public class FNode extends Node {
 		
 		if (this == msg.UNode) {
 			for (Edge e : outgoingConnections) {
-				if(e.endNode == msg.to) {
-					send(msg, e.endNode);
-				}
+				if(e.endNode == msg.to) { send(msg, e.endNode);	}
 			}
-		}
-		
-		send(msg, parentTable.get(msg.UNode).parent);
+		} else {
+			send(msg, parentTable.get(msg.UNode).parent);
+		}		
 	}
 	
 	private int maxu_num;
 	private boolean maxu_done;
 	public Node deactivtorNode;
+	public boolean handleMaxUReturnToContinue(MaxU msg){
+		MaxU maxu = (MaxU)msg;
+		
+		if (maxu.req == MaxU.Request.INIT) {
+			maxu_num = maxu.num;
+			maxu_done = false;
+			FNode.U.clear();
+			for(Edge e : outgoingConnections) {
+				send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
+			}
+			return false;
+		}
+		
+		if (maxu.req == MaxU.Request.ACTIVE) {
+			setColor(Color.GREEN);
+			if(maxu.num > maxu_num) {
+				for(Edge e : outgoingConnections) {
+					send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
+				}
+				return false;
+			}
+		} 
+		
+		if (maxu.req == MaxU.Request.DEACTIVE){
+			if ( (maxu.num > maxu_num)  || (maxu.num == maxu_num) && maxu.node.ID > this.ID) {
+				setColor(Color.RED);
+				deactivtorNode =  maxu.node;
+				FNode.U.remove(this);
+				maxu_done = true;
+				return false;
+			}
+		}
+			
+		return true;
+	}
+	
 	@Override
 	public void handleMessages(Inbox inbox) {
+		boolean isMaxuNeedToContinue = (Global.systemState == 1);
 		while(inbox.hasNext()) {
 			Message msg = inbox.next();
 			if(msg instanceof PathU) {
@@ -160,51 +195,25 @@ public class FNode extends Node {
 			if(msg instanceof SendTo) {
 				handleSendTo((SendTo)msg);
 			}
+			
 			if(msg instanceof MaxU) {
-				MaxU maxu = (MaxU)msg;
-				
-				if (maxu.req == MaxU.Request.INIT) {
-					maxu_num = maxu.num;
-					maxu_done = false;
-					FNode.U.clear();
-					for(Edge e : outgoingConnections) {
-						send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
-					}
-					return;
-				}
-				
-				if (maxu_done) {
+				if (!maxu_done) {isMaxuNeedToContinue &= handleMaxUReturnToContinue((MaxU)msg);}
+				if (maxu_done || isMaxuNeedToContinue) {
 					inbox.reset();
 					return;
 				}
-				
-				if (maxu.req == MaxU.Request.ACTIVE) {
-					setColor(Color.GREEN);
-					if(maxu.num > maxu_num) {
-						inbox.reset();
-						for(Edge e : outgoingConnections) {
-							send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
-						}
-						return;
-					}
-				} else if (maxu.req == MaxU.Request.DEACTIVE){
-					if ( (maxu.num > maxu_num)  || (maxu.num == maxu_num) && maxu.node.ID > this.ID) {
-						setColor(Color.RED);
-						deactivtorNode =  maxu.node;
-						FNode.U.remove(this);
-						maxu_done = true;
-						return;
-					}
-				}
-				
-				if ( !inbox.hasNext()) {
-					// active and handle all neighbor messages => in U
-					U.add(this);
-					setColor(Color.BLUE);
-					for(Edge e : outgoingConnections) {
-						send(new MaxU(MaxU.Request.DEACTIVE, maxu_num, this), e.endNode);
-					}
-				}
+			}
+		}
+		
+		if(isMaxuNeedToContinue) {
+			// isMaxuNeedToContinue => I'm the max in this round therefore:
+			// * add to U
+			// * Deactivate neighbors
+			// * Inform neighbors I'm U
+			U.add(this);
+			setColor(Color.BLUE);
+			for(Edge e : outgoingConnections) {
+				send(new MaxU(MaxU.Request.DEACTIVE, maxu_num, this), e.endNode);
 			}
 		}
 	}
