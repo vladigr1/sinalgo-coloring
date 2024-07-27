@@ -147,7 +147,7 @@ public class MyNode extends Node {
 		send(msg, parentTable.get(msg.UNode).parent);
 	}
 	
-	private double maxu_num;
+	private long maxu_num;
 	private boolean maxu_done;
 	public Node deactivtorNode;
 	@Override
@@ -201,6 +201,7 @@ public class MyNode extends Node {
 					// active and handle all neighbor messages => in U
 					U.add(this);
 					setColor(Color.BLUE);
+					deactivtorNode = this;
 					for(Edge e : outgoingConnections) {
 						send(new MaxU(MaxU.Request.DEACTIVE, maxu_num, this), e.endNode);
 					}
