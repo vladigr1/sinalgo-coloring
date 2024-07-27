@@ -48,7 +48,7 @@ import javax.swing.JOptionPane;
 
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
-import projects.sample5.nodes.nodeImplementations.FNode;
+import projects.sample5.nodes.nodeImplementations.MyNode;
 import projects.sample5.nodes.timers.GTimer;
 import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.nodes.Node;
@@ -92,14 +92,6 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	public boolean hasTerminated() {
 		return false;
 	}
-
-//	@GlobalMethod(menuText="Clear Routing Tables")
-//	public void clearRoutingTalbes() {
-//		for(Node n : Tools.getNodeList()) {
-//			FNode fn = (FNode) n;
-//			fn.clearRoutingTable();
-//		}
-//	}
 	
 	@GlobalMethod(menuText="Reset Node Color")
 	public void resetNodeColor() {
@@ -118,7 +110,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 			{
 				maxDegree = n.outgoingConnections.size(); // Find max degree
 			}
-			int rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
+			double rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
 			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
 			t.startRelative(1, n);
 		}
@@ -127,12 +119,12 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	//@AbstractCustomGlobal.CustomButton(buttonText="GEN-Path", toolTipText="A sample button")
 	static public void genPath() throws IOException {
 		for(Node n : Tools.getNodeList()) {
-			if(n instanceof FNode) {
-				((FNode)n).resetParentTable();
+			if(n instanceof MyNode) {
+				((MyNode)n).resetParentTable();
 			}
 		}
 		
-		for(FNode n : FNode.U) {	
+		for(MyNode n : MyNode.U) {	
 			GTimer t = new GTimer(new PathU(n,n,0.0,0));
 			t.startRelative(1, n);
 		}
@@ -142,20 +134,23 @@ public class CustomGlobal extends AbstractCustomGlobal{
 	static public void writeStatisticsToFile() throws IOException
 	{
 		String strNumOfNodes = "Number vertices in a graph: " + Tools.getNodeList().size() + "\n";
-		String strSizeOfU = "Size of U: " + FNode.U.size() + "\n";
+		String strSizeOfU = "Size of U: " + MyNode.U.size() + "\n";
 		String strGenerateU = "Number of rounds for building U: " + numOfRoundsForStepOne + "\n";
 		String strGeneratePath = "Number of rounds for building Path: " + numOfRoundsForStepTwo + "\n";
 		String strSendMessage = "Number of rounds for sending message: " + numOfRoundsForStepThree + "\n";
 		String strMaxDegree = "Max degree in a graph is : " + maxDegree + "\n";
-		int radious = Collections.max(FNode.numOfSendedMessagesFromNode.values());
+		int radious = Collections.max(MyNode.numOfSendedMessagesFromNode.values());
 		String strDiameter = "Diameter of a graph: " + radious * 2 + "\n";
+		String totalNumOfRounds = "The total number of rounds is : " + (numOfRoundsForStepOne + numOfRoundsForStepTwo + numOfRoundsForStepThree);
 		
 		BufferedWriter writer = new BufferedWriter(new FileWriter("Statistics.txt"));
-		writer.write(strGenerateU);
-		writer.append(strGeneratePath);
-		writer.append(strSendMessage);
+		writer.write(strNumOfNodes);
 		writer.append(strMaxDegree);
+		writer.append(strSizeOfU);
+		writer.append(strSendMessage);
 		writer.append(strDiameter);
+		writer.append(totalNumOfRounds);
+		
 		writer.close();
 	
 	}

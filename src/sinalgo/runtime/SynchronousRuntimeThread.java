@@ -132,8 +132,8 @@ public class SynchronousRuntimeThread extends Thread {
 				}
 				if(Global.numberOfMessagesInThisRound == 0 && Global.systemState == 3)
 				{
-					CustomGlobal.numOfRoundsForStepThree = Global.numOfRounds;
-					Main.warning("Sending message done in " + Global.numOfRounds + " cycles!");
+					CustomGlobal.numOfRoundsForStepThree = Global.numOfRounds - CustomGlobal.numOfRoundsForStepTwo - CustomGlobal.numOfRoundsForStepOne;
+					Main.warning("Sending message done in " + CustomGlobal.numOfRoundsForStepThree + " cycles!");
 					try {
 						CustomGlobal.writeStatisticsToFile();
 					} catch (IOException e) {
@@ -143,13 +143,13 @@ public class SynchronousRuntimeThread extends Thread {
 				}
 				if(Global.numberOfMessagesInThisRound == 0 && Global.systemState == 2)
 				{
-					CustomGlobal.numOfRoundsForStepTwo = Global.numOfRounds;
-					Main.warning("Building Paths group finished in " + Global.numOfRounds + "!");
+					CustomGlobal.numOfRoundsForStepTwo = Global.numOfRounds - CustomGlobal.numOfRoundsForStepOne;
+					Main.warning("Building Paths group finished in " + CustomGlobal.numOfRoundsForStepTwo + "!");
 				}
 				if(Global.numberOfMessagesInThisRound == 0 && Global.systemState == 1)
 				{
 					CustomGlobal.numOfRoundsForStepOne = Global.numOfRounds;
-					Main.warning("Building U group finished in " + Global.numOfRounds + "!");
+					Main.warning("Building U group finished in " + CustomGlobal.numOfRoundsForStepOne + "!");
 					CustomGlobal.genPath();
 				}
 				

@@ -1,7 +1,7 @@
 package projects.sample5.nodes.timers;
 
 import projects.sample5.nodes.messages.PayloadMsg;
-import projects.sample5.nodes.nodeImplementations.FNode;
+import projects.sample5.nodes.nodeImplementations.MyNode;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 import sinalgo.nodes.timers.Timer;
@@ -23,7 +23,7 @@ public class GTimer extends Timer {
 	
 	@Override
 	public void fire() {
-		((FNode) node).GMsg_handle(msg);
+		((MyNode) node).GMsg_handle(msg);
 	}
 
 }

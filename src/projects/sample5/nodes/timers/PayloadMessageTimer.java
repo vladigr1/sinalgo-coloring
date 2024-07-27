@@ -1,7 +1,7 @@
 package projects.sample5.nodes.timers;
 
 import projects.sample5.nodes.messages.PayloadMsg;
-import projects.sample5.nodes.nodeImplementations.FNode;
+import projects.sample5.nodes.nodeImplementations.MyNode;
 import sinalgo.nodes.timers.Timer;
 
 /**
@@ -21,7 +21,6 @@ public class PayloadMessageTimer extends Timer {
 	
 	@Override
 	public void fire() {
-//		((FNode) node).sendPayloadMessage(msg);
 	}
 
 }

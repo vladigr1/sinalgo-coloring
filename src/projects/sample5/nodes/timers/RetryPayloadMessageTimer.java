@@ -1,7 +1,7 @@
 package projects.sample5.nodes.timers;
 
 import projects.sample5.nodes.messages.PayloadMsg;
-import projects.sample5.nodes.nodeImplementations.FNode;
+import projects.sample5.nodes.nodeImplementations.MyNode;
 import sinalgo.nodes.timers.Timer;
 
 /**
@@ -31,7 +31,7 @@ public class RetryPayloadMessageTimer extends Timer {
 	@Override
 	public void fire() {
 		if(isActive) {
-			FNode n = (FNode) this.node;
+			MyNode n = (MyNode) this.node;
 //			n.sendPayloadMessage(message); 
 			// we could also invalidate the routing entry, and search again
 		}

@@ -1,6 +1,6 @@
 package projects.sample5.nodes.timers;
 
-import projects.sample5.nodes.nodeImplementations.FNode;
+import projects.sample5.nodes.nodeImplementations.MyNode;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.timers.Timer;
 
@@ -38,7 +38,7 @@ public class RetryFloodingTimer extends Timer {
 	@Override
 	public void fire() {
 		if(isActive){
-			FNode n = (FNode) this.node;
+			MyNode n = (MyNode) this.node;
 //			n.lookForNode(destination, currentTTL * 2); // restart a flooding search with TTL twice as big
 		}
 	}

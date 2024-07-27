@@ -42,7 +42,7 @@ import sinalgo.tools.logging.Logging;
 /**
  * A node that implements a flooding strategy to determine paths to other nodes.
  */
-public class FNode extends Node {
+public class MyNode extends Node {
 
 
 //	/**
@@ -67,7 +67,7 @@ public class FNode extends Node {
 //	Hashtable<Node, RoutingEntry> routingTable = new Hashtable<Node, RoutingEntry>();
 	
 	// messages that could not be sent so far, because no route is known
-	public static Vector<FNode> U = new Vector<FNode>();
+	public static Vector<MyNode> U = new Vector<MyNode>();
 	public static  Hashtable<Node, Integer> numOfSendedMessagesFromNode = new Hashtable<Node, Integer>();
 	
 //	/**
@@ -147,7 +147,7 @@ public class FNode extends Node {
 		send(msg, parentTable.get(msg.UNode).parent);
 	}
 	
-	private int maxu_num;
+	private double maxu_num;
 	private boolean maxu_done;
 	public Node deactivtorNode;
 	@Override
@@ -166,7 +166,7 @@ public class FNode extends Node {
 				if (maxu.req == MaxU.Request.INIT) {
 					maxu_num = maxu.num;
 					maxu_done = false;
-					FNode.U.clear();
+					MyNode.U.clear();
 					for(Edge e : outgoingConnections) {
 						send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
 					}
@@ -191,7 +191,7 @@ public class FNode extends Node {
 					if ( (maxu.num > maxu_num)  || (maxu.num == maxu_num) && maxu.node.ID > this.ID) {
 						setColor(Color.RED);
 						deactivtorNode =  maxu.node;
-						FNode.U.remove(this);
+						MyNode.U.remove(this);
 						maxu_done = true;
 						return;
 					}
@@ -225,12 +225,12 @@ public class FNode extends Node {
 		Global.systemState = 3;
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			public void handleNodeSelectedEvent(Node n) {
-				if(n == null && !(n instanceof FNode) ) {
+				if(n == null && !(n instanceof MyNode) ) {
 					return; // aborted
 				}
-				FNode to = (FNode)n;
+				MyNode to = (MyNode)n;
 				GTimer t = new GTimer(new SendTo(to, to.deactivtorNode));
-				t.startRelative(1, FNode.this);
+				t.startRelative(1, MyNode.this);
 			}
 		}, "Select a node to send a message to...");
 	}
