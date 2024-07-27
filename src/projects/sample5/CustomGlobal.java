@@ -125,15 +125,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 			}
 		}
 		
-		String strNumOfNodes = "Number vertices in a graph: " + Tools.getNodeList().size() + "\n";
-		String strSizeOfU = "Size of U: " + FNode.U.size() + "\n";
-		String strGenerateU = "Number of rounds for building U: " + numOfRoundsForStepOne + "\n";
-		String strGeneratePath = "Number of rounds for building Path: " + numOfRoundsForStepTwo + "\n";
-		String strSendMessage = "Number of rounds for sending message: " + numOfRoundTotal + "\n";
-		String strMaxDegree = "Max degree in a graph is : " + maxDegree + "\n";
-		int radious = Collections.max(FNode.numOfSendedMessagesFromNode.values());
-		String strDiameter = "Diameter of a graph: " + radious * 2 + "\n";
-		
+		int radious = 2 * Collections.max(FNode.numOfSendedMessagesFromNode.values());
 		String header = "num_v, max_deg_v, num_v_in_u, leng_path, approximation_diameter, rounds_build_u_and_build_path\n";
 		String line = 
 				Tools.getNodeList().size() + ", " +
