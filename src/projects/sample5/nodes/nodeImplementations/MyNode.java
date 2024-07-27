@@ -6,7 +6,7 @@ import java.util.Vector;
 import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
 import projects.sample5.nodes.messages.MaxIndependentSet;
 import projects.sample5.nodes.messages.ShortestPathInU;
-import projects.sample5.nodes.messages.SendTo;
+import projects.sample5.nodes.messages.DeliverMsg;
 import projects.sample5.nodes.timers.MyTimer;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.helper.NodeSelectionHandler;
@@ -78,7 +78,7 @@ public class MyNode extends Node {
 		}
 	}
 	
-	public void handleSendTo(SendTo msg) {
+	public void handleSendTo(DeliverMsg msg) {
 		if (this == msg.to) { return ;}
 		
 		if (this == msg.UNode) {
@@ -102,8 +102,8 @@ public class MyNode extends Node {
 			if(msg instanceof ShortestPathInU) {
 				handlePathU((ShortestPathInU)msg);
 			}
-			if(msg instanceof SendTo) {
-				handleSendTo((SendTo)msg);
+			if(msg instanceof DeliverMsg) {
+				handleSendTo((DeliverMsg)msg);
 			}
 			if(msg instanceof MaxIndependentSet) {
 				MaxIndependentSet maxu = (MaxIndependentSet)msg;
@@ -175,7 +175,7 @@ public class MyNode extends Node {
 					return;
 				}
 				MyNode to = (MyNode)n;
-				MyTimer t = new MyTimer(new SendTo(to, to.deactivtorNode));
+				MyTimer t = new MyTimer(new DeliverMsg(to, to.deactivtorNode));
 				t.startRelative(1, MyNode.this);
 			}
 		}, "Select a node to send a message to...");
