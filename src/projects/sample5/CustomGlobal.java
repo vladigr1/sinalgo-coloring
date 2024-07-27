@@ -110,7 +110,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 			{
 				maxDegree = n.outgoingConnections.size(); // Find max degree
 			}
-			double rand_maxu = rand.nextInt((int)Math.pow(max,4) + 1);
+			long rand_maxu = rand.nextLong((long)Math.pow(max,4) + 1);
 			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
 			t.startRelative(1, n);
 		}
