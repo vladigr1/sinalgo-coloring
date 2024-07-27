@@ -49,7 +49,7 @@ import javax.swing.JOptionPane;
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.nodeImplementations.MyNode;
-import projects.sample5.nodes.timers.GTimer;
+import projects.sample5.nodes.timers.MyTimer;
 import projects.sample6.nodes.messages.MarkMessage;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.AbstractCustomGlobal;
@@ -111,7 +111,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 				maxDegree = n.outgoingConnections.size(); // Find max degree
 			}
 			long rand_maxu = rand.nextLong((long)Math.pow(max,4) + 1);
-			GTimer t = new GTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
+			MyTimer t = new MyTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
 			t.startRelative(1, n);
 		}
 	}
@@ -125,7 +125,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 		}
 		
 		for(MyNode n : MyNode.U) {	
-			GTimer t = new GTimer(new PathU(n,n,0.0,0));
+			MyTimer t = new MyTimer(new PathU(n,n,0.0,0));
 			t.startRelative(1, n);
 		}
 		Global.systemState = 2;

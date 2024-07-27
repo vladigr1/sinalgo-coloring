@@ -7,7 +7,7 @@ import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
 import projects.sample5.nodes.messages.MaxU;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.messages.SendTo;
-import projects.sample5.nodes.timers.GTimer;
+import projects.sample5.nodes.timers.MyTimer;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.nodes.Node;
@@ -175,7 +175,7 @@ public class MyNode extends Node {
 					return;
 				}
 				MyNode to = (MyNode)n;
-				GTimer t = new GTimer(new SendTo(to, to.deactivtorNode));
+				MyTimer t = new MyTimer(new SendTo(to, to.deactivtorNode));
 				t.startRelative(1, MyNode.this);
 			}
 		}, "Select a node to send a message to...");

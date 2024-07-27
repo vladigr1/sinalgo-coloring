@@ -11,13 +11,13 @@ import sinalgo.nodes.timers.Timer;
  * is used in synchronous simulation mode to handle user
  * input while the simulation is not running. 
  */
-public class GTimer extends Timer {
+public class MyTimer extends Timer {
 	Message msg = null; // the msg to send
 
 	/**
 	 * @param msg The message to send
 	 */
-	public GTimer(Message msg) {
+	public MyTimer(Message msg) {
 		this.msg = msg;
 	}
 	
