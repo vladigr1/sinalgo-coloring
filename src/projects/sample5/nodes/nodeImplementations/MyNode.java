@@ -102,8 +102,7 @@ public class MyNode extends Node {
 		
 	}
 	
-	// [UNode] -> parent_node
-	private Color[] lcolor = {Color.PINK, Color.ORANGE, Color.GREEN, Color.MAGENTA, Color.BLUE, Color.CYAN}; //RED not in use
+	private Color[] lcolor = {Color.GREEN, Color.ORANGE, Color.PINK, Color.WHITE, Color.YELLOW, Color.BLUE}; //RED not in use
 	Hashtable<Node, ParentDistnace> parentTable = new Hashtable<Node, ParentDistnace>();
 	public void resetParentTable() {
 		parentTable = new Hashtable<Node, ParentDistnace>();
