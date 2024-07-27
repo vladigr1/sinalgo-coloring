@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Hashtable;
 import java.util.Vector;
 import projects.defaultProject.models.messageTransmissionModels.ConstantTime;
-import projects.sample5.nodes.messages.MaxU;
+import projects.sample5.nodes.messages.MaxIndependentSet;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.messages.SendTo;
 import projects.sample5.nodes.timers.MyTimer;
@@ -105,15 +105,15 @@ public class MyNode extends Node {
 			if(msg instanceof SendTo) {
 				handleSendTo((SendTo)msg);
 			}
-			if(msg instanceof MaxU) {
-				MaxU maxu = (MaxU)msg;
+			if(msg instanceof MaxIndependentSet) {
+				MaxIndependentSet maxu = (MaxIndependentSet)msg;
 				
-				if (maxu.req == MaxU.Request.INIT) {
+				if (maxu.req == MaxIndependentSet.Request.INIT) {
 					maxu_num = maxu.num;
 					maxu_done = false;
 					MyNode.U.clear();
 					for(Edge e : outgoingConnections) {
-						send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
+						send(new MaxIndependentSet(MaxIndependentSet.Request.ACTIVE, maxu_num, this), e.endNode);
 					}
 					return;
 				}
@@ -123,16 +123,16 @@ public class MyNode extends Node {
 					return;
 				}
 				
-				if (maxu.req == MaxU.Request.ACTIVE) {
+				if (maxu.req == MaxIndependentSet.Request.ACTIVE) {
 					setColor(Color.GREEN);
 					if(maxu.num > maxu_num) {
 						inbox.reset();
 						for(Edge e : outgoingConnections) {
-							send(new MaxU(MaxU.Request.ACTIVE, maxu_num, this), e.endNode);
+							send(new MaxIndependentSet(MaxIndependentSet.Request.ACTIVE, maxu_num, this), e.endNode);
 						}
 						return;
 					}
-				} else if (maxu.req == MaxU.Request.DEACTIVE){
+				} else if (maxu.req == MaxIndependentSet.Request.DEACTIVE){
 					if ( (maxu.num > maxu_num)  || (maxu.num == maxu_num) && maxu.node.ID > this.ID) {
 						setColor(Color.RED);
 						deactivtorNode =  maxu.node;
@@ -148,7 +148,7 @@ public class MyNode extends Node {
 					setColor(Color.BLUE);
 					deactivtorNode = this;
 					for(Edge e : outgoingConnections) {
-						send(new MaxU(MaxU.Request.DEACTIVE, maxu_num, this), e.endNode);
+						send(new MaxIndependentSet(MaxIndependentSet.Request.DEACTIVE, maxu_num, this), e.endNode);
 					}
 				}
 			}

@@ -1,6 +1,6 @@
 package projects.sample5.nodes.messages;
 
-import projects.sample5.nodes.messages.MaxU.Request;
+import projects.sample5.nodes.messages.MaxIndependentSet.Request;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Message;
 

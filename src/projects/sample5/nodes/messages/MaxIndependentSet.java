@@ -9,7 +9,7 @@ import sinalgo.nodes.messages.Message;
  * incremental flooding.
  * This message requires the read-only policy. 
  */
-public class MaxU extends Message {
+public class MaxIndependentSet extends Message {
 	public enum Request{
 		INIT,ACTIVE,DEACTIVE
 	}
@@ -20,7 +20,7 @@ public class MaxU extends Message {
 	/**
 	 * Default constructor. 
 	 */
-	public MaxU(Request req, long num, Node node) {
+	public MaxIndependentSet(Request req, long num, Node node) {
 		this.req = req;
 		this.num = num;
 		this.node = node;

@@ -46,7 +46,7 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import projects.sample5.nodes.messages.MaxU;
+import projects.sample5.nodes.messages.MaxIndependentSet;
 import projects.sample5.nodes.messages.PathU;
 import projects.sample5.nodes.nodeImplementations.MyNode;
 import projects.sample5.nodes.timers.MyTimer;
@@ -111,7 +111,7 @@ public class CustomGlobal extends AbstractCustomGlobal{
 				maxDegree = n.outgoingConnections.size(); // Find max degree
 			}
 			long rand_maxu = rand.nextLong((long)Math.pow(max,4) + 1);
-			MyTimer t = new MyTimer(new MaxU(MaxU.Request.INIT, rand_maxu, n));
+			MyTimer t = new MyTimer(new MaxIndependentSet(MaxIndependentSet.Request.INIT, rand_maxu, n));
 			t.startRelative(1, n);
 		}
 	}
